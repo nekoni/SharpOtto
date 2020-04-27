@@ -1,2 +1,2 @@
 # SharpOtto
-Simple Chip-8 emulator written in C# .NET core
+Simple Chip-8 emulator written in C# .NET Core
