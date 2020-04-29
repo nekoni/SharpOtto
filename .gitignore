@@ -1,0 +1,4 @@
+src/SharpOtto.Core/bin/*
+src/SharpOtto.Core/obj/*
+src/SharpOtto.Wpf/bin/*
+src/SharpOtto.Wpf/obj/*
