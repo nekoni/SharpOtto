@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-
+    using System.Windows.Threading;
     using SharpOtto.Core;
     using SharpOtto.Core.Input;
 
@@ -16,6 +17,8 @@
     public partial class MainWindow : Window
     {
         private Interpreter interpreter = new Interpreter();
+
+        private Task gameTask;
 
         private Dictionary<Key, KeypadKey> keysMap = new Dictionary<Key, KeypadKey>()
         {
@@ -42,7 +45,7 @@
             this.InitializeComponent();
             this.RegisterKeyboardEvents();
             this.RegisterScreenUpdateEvent();
-            this.LoadGame();
+            this.gameTask = Task.Factory.StartNew(() => this.LoadGame());
         }
 
         private void LoadGame()
@@ -69,6 +72,11 @@
                     image.EndInit();
                     this.Screen.Source = image;
                 }
+            };
+
+            this.interpreter.OnCyclesCompleted += (sender, args) =>
+            {
+                Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate { }));
             };
         }
 

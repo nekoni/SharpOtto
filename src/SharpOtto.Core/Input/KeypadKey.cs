@@ -2,43 +2,43 @@ namespace SharpOtto.Core.Input
 {
     public sealed class KeypadKey
     {
-        public static KeypadKey Pad0 = new KeypadKey("0");
+        public static KeypadKey Pad0 = new KeypadKey(0x00);
 
-        public static KeypadKey Pad1 = new KeypadKey("1");
+        public static KeypadKey Pad1 = new KeypadKey(0x01);
 
-        public static KeypadKey Pad2 = new KeypadKey("2");
+        public static KeypadKey Pad2 = new KeypadKey(0x02);
 
-        public static KeypadKey Pad3 = new KeypadKey("3");
+        public static KeypadKey Pad3 = new KeypadKey(0x03);
 
-        public static KeypadKey Pad4 = new KeypadKey("4");
+        public static KeypadKey Pad4 = new KeypadKey(0x04);
 
-        public static KeypadKey Pad5 = new KeypadKey("5");
+        public static KeypadKey Pad5 = new KeypadKey(0x05);
 
-        public static KeypadKey Pad6 = new KeypadKey("6");
+        public static KeypadKey Pad6 = new KeypadKey(0x06);
 
-        public static KeypadKey Pad7 = new KeypadKey("7");
+        public static KeypadKey Pad7 = new KeypadKey(0x07);
 
-        public static KeypadKey Pad8 = new KeypadKey("8");
+        public static KeypadKey Pad8 = new KeypadKey(0x08);
 
-        public static KeypadKey Pad9 = new KeypadKey("9");
+        public static KeypadKey Pad9 = new KeypadKey(0x09);
 
-        public static KeypadKey PadA = new KeypadKey("A");
+        public static KeypadKey PadA = new KeypadKey(0x0A);
 
-        public static KeypadKey PadB = new KeypadKey("B");
+        public static KeypadKey PadB = new KeypadKey(0x0B);
 
-        public static KeypadKey PadC = new KeypadKey("C");
+        public static KeypadKey PadC = new KeypadKey(0x0C);
 
-        public static KeypadKey PadD = new KeypadKey("D");
+        public static KeypadKey PadD = new KeypadKey(0x0D);
 
-        public static KeypadKey PadE = new KeypadKey("E");
+        public static KeypadKey PadE = new KeypadKey(0x0E);
 
-        public static KeypadKey PadF  = new KeypadKey("F");
+        public static KeypadKey PadF  = new KeypadKey(0x0F);
 
-        public string Symbol { get; private set; }
+        public byte Value { get; private set; }
 
-        public KeypadKey(string symbol)
+        public KeypadKey(byte value)
         {
-            this.Symbol = symbol;
+            this.Value = value;
         }
     }
 }
