@@ -19,10 +19,10 @@ namespace SharpOtto.Core
         public int GetCycles()
         {
             var currentMs = this.watch.ElapsedMilliseconds;
-            var cycles = (int)(currentMs - lastMs) * frequency / 1000;
+            var cycles = (int)(currentMs - this.lastMs) * frequency / 1000;
             if (cycles > 0)
             {
-                lastMs = currentMs;
+                this.lastMs = currentMs;
             }
             
             return cycles;
