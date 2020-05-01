@@ -4,9 +4,9 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SharpOtto.Wpf"
-        mc:Ignorable="d"
-        Title="SharpOtto" Height="450" Width="800">
-    <Grid>
-        <Image Name="Screen" />
+        ResizeMode="NoResize"
+        Title="SharpOtto" Height="680" Width="1320">
+    <Grid UseLayoutRounding="True">
+        <Image Name="Screen" Height="640" Width="1280" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
     </Grid>
 </Window>
