@@ -20,7 +20,11 @@ namespace SharpOtto.Core
         {
             var currentMs = this.watch.ElapsedMilliseconds;
             var cycles = (int)(currentMs - lastMs) * frequency / 1000;
-            lastMs = currentMs;
+            if (cycles > 0)
+            {
+                lastMs = currentMs;
+            }
+            
             return cycles;
         }
     }

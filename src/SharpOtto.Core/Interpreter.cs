@@ -1,9 +1,11 @@
 namespace SharpOtto.Core
 {
     using System;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
+    using System.Drawing;
+
     using SharpOtto.Core.Input;
     using SharpOtto.Core.Screen;
 
@@ -17,11 +19,13 @@ namespace SharpOtto.Core
 
         private ushort pc;
 
-        private byte[] screen = new byte[64 * 32];
+        private bool[] screen = new bool[64 * 32];
 
-        private byte delayTimer;
+        private bool drawScreen = false;
 
-        private byte soundTimer;
+        private sbyte delayTimer;
+
+        private sbyte soundTimer;
 
         private Stack<ushort> stack = new Stack<ushort>();
 
@@ -56,7 +60,7 @@ namespace SharpOtto.Core
 
         public Interpreter()
         {
-            this.opsTimer = new CyclesTimer(this.watch, 500);
+            this.opsTimer = new CyclesTimer(this.watch, 1000);
             this.delayAndSoundTimer = new CyclesTimer(this.watch, 60);
         }
 
@@ -87,34 +91,51 @@ namespace SharpOtto.Core
             this.pc = 512;
             while (true)
             {
-                var cycles = this.opsTimer.GetCycles();
-                for (var cycle = 0; cycle < cycles; cycle++)
-                {
-                    var opcode = (ushort)(memory[this.pc] << 8 | memory[this.pc + 1]);
-
-                    this.HandleOpCode(opcode);
-
-                    this.pc += 2;
-                }
-
                 var delayAndSoundCycles = this.delayAndSoundTimer.GetCycles();
                 if (this.delayTimer > 0)
                 {
-                    this.delayTimer -= (byte)delayAndSoundCycles;
+                    this.delayTimer -= (sbyte)delayAndSoundCycles;
+                }
+                else
+                {
+                    this.delayTimer = 0;
                 }
 
                 if (this.soundTimer > 0)
                 {
-                    this.soundTimer -= (byte)delayAndSoundCycles;
+                    this.soundTimer -= (sbyte)delayAndSoundCycles;
                     if (this.soundTimer <= 0)
                     {
                         Console.WriteLine("Beep");
                     }
                 }
-
-                if(this.OnCyclesCompleted != null)
+                else
                 {
-                    this.OnCyclesCompleted(this, new EventArgs());
+                    this.soundTimer = 0;
+                }
+
+                var cycles = this.opsTimer.GetCycles();
+                for (var cycle = 0; cycle < cycles; cycle++)
+                {
+                    var opcode = (ushort)(memory[this.pc] << 8 | memory[this.pc + 1]);
+                    this.HandleOpCode(opcode);
+                    this.pc += 2;
+                }
+
+                if (this.OnUpdateScreen != null && this.drawScreen)
+                {
+                    var bmp = new Bitmap(64, 32);
+                    for (var y = 0; y < 32; y++)
+                    {
+                        for (var x = 0; x < 64; x++)
+                        {
+                            var color = this.screen[x + y * 64] ? Color.White : Color.Black;
+                            bmp.SetPixel(x, y, color);
+                        }
+                    }
+
+                    this.OnUpdateScreen(this, new UpdateScreenEventArgs(bmp));
+                    this.drawScreen = false;
                 }
             }
         }
@@ -128,6 +149,7 @@ namespace SharpOtto.Core
             if (opcode == 0x00E0) // CLS
             {
                 Array.Clear(this.screen, 0, this.screen.Length);
+                this.drawScreen = true;
                 return;
             }
 
@@ -234,7 +256,7 @@ namespace SharpOtto.Core
 
                     case 5: // SUB Vx, Vy
                     {
-                        this.v[15] = (byte) (this.v[y] > this.v[y] ? 1 : 0);
+                        this.v[15] = (byte) (this.v[x] > this.v[y] ? 1 : 0);
                         this.v[x] -= this.v[y];
                         return;
                     }
@@ -248,7 +270,7 @@ namespace SharpOtto.Core
 
                     case 7: // SUBN Vx, Vy
                     {
-                        this.v[15] = (byte) (this.v[y] > this.v[y] ? 1 : 0);
+                        this.v[15] = (byte) (this.v[y] > this.v[x] ? 1 : 0);
                         this.v[x] = (byte) (this.v[y] - this.v[x]);
                         return;
                     }
@@ -275,7 +297,6 @@ namespace SharpOtto.Core
             if (op == 0xA000) // LD I, addr
             {
                 this.index = (ushort)(opcode & 0x0FFF);
-                this.pc += 2;
                 return;
             }
 
@@ -291,9 +312,46 @@ namespace SharpOtto.Core
                 return;
             }
 
-            if (op == 0xD000) // RND Vx, byte
+            if (op == 0xD000) // DRW Vx, Vy, nibble
             {
                 var n = (byte)(opcode & 0x000F);
+                var sprite = new byte[n];
+                Array.Copy(this.memory, this.index, sprite, 0, n);
+                var bsprite = new List<bool>();
+                for (var z = 0; z < n; z++)
+                {
+                    var tmp = new BitArray(new byte[] { sprite[z] });
+                    var tmp1 = new List<bool>();
+                    foreach (var bit in tmp)
+                    {
+                        tmp1.Add((bool)bit);
+                    }
+
+                    tmp1.Reverse();
+                    bsprite.AddRange(tmp1);
+                }
+
+                var erase = false;
+                for (var j = 0; j < n; j++)
+                {
+                    for (var i = 0; i < 8; i++)
+                    {
+                        var w = i + this.v[x] + (this.v[y] + j) * 64;
+                        var u = i + j * 8;
+
+                        if (w < this.screen.Length)
+                        {
+                            if (this.screen[w] && bsprite[u])
+                            {
+                                erase = true;
+                            }
+
+                            this.screen[w] ^= bsprite[u];
+                        }
+                    }
+                }
+                this.v[15] = (byte)(erase ? 1 : 0);
+                this.drawScreen = true;
                 return;
             }
 
@@ -329,7 +387,7 @@ namespace SharpOtto.Core
                 {
                     case 0x0007: // LD Vx, DT
                     {
-                        this.v[x] = this.delayTimer;
+                        this.v[x] = (byte)this.delayTimer;
                         return;
                     }
 
@@ -355,13 +413,13 @@ namespace SharpOtto.Core
 
                     case 0x0015: // LD DT, Vx
                     {
-                        this.delayTimer = this.v[x];
+                        this.delayTimer = (sbyte)this.v[x];
                         return;
                     }
 
                     case 0x0018: // LD ST, Vx
                     {
-                        this.soundTimer = this.v[x];
+                        this.soundTimer = (sbyte)this.v[x];
                         return;
                     }
 
@@ -373,25 +431,28 @@ namespace SharpOtto.Core
 
                     case 0x0029: // LD F, Vx
                     {
-                        
+                        this.index = (ushort)(this.v[x] * 4);
                         return;
                     }
 
                     case 0x0033: // LD B, Vx
                     {
-                        
+                        var val = this.v[x].ToString("000");
+                        this.memory[this.index] = byte.Parse(val[0].ToString());
+                        this.memory[this.index+1] = byte.Parse(val[1].ToString());
+                        this.memory[this.index+2] = byte.Parse(val[2].ToString());
                         return;
                     }
 
                     case 0x0055: // LD [I], Vx
                     {
-                        Array.Copy(this.v, 0, this.memory, this.index, x);
+                        Array.Copy(this.v, 0, this.memory, this.index, x+1);
                         return;
                     }
 
                     case 0x0065: // LD Vx, [I]
                     {
-                        Array.Copy(this.memory, this.index, this.v, 0, x);
+                        Array.Copy(this.memory, this.index, this.v, 0, x+1);
                         return;
                     }
                 }

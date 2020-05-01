@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Drawing;
+    using System.Drawing.Imaging;
     using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
@@ -63,21 +65,33 @@
         {
             this.interpreter.OnUpdateScreen += (sender, args) =>
             {
-                using (var memoryStream = new MemoryStream(args.Buffer))
+                using (var memoryStream = new MemoryStream())
                 {
-                    var image = new BitmapImage();
-                    image.BeginInit();
-                    image.CacheOption = BitmapCacheOption.OnLoad;
-                    image.StreamSource = memoryStream;
-                    image.EndInit();
-                    this.Screen.Source = image;
+                    args.Bitmap.Save(memoryStream, ImageFormat.Png);
+                    memoryStream.Position = 0;
+
+                    try
+                    {
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            var image = new BitmapImage();
+                            image.BeginInit();
+                            image.CacheOption = BitmapCacheOption.OnLoad;
+                            image.StreamSource = memoryStream;
+                            image.EndInit();
+                            this.Screen.Source = image;
+                        });
+                    }
+                    catch
+                    {
+                    }
                 }
             };
 
-            this.interpreter.OnCyclesCompleted += (sender, args) =>
-            {
-                Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate { }));
-            };
+            // this.interpreter.OnCyclesCompleted += (sender, args) =>
+            // {
+            //     Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate { }));
+            // };
         }
 
         private void RegisterKeyboardEvents()

@@ -1,14 +1,15 @@
 namespace SharpOtto.Core.Screen
 {
     using System;
+    using System.Drawing;
 
     public class UpdateScreenEventArgs : EventArgs
     {
-        public byte[] Buffer { get; private set; }
+        public Bitmap Bitmap { get; private set; }
 
-        public UpdateScreenEventArgs(byte[] buffer)
+        public UpdateScreenEventArgs(Bitmap bitmap)
         {
-            this.Buffer = buffer;
+            this.Bitmap = bitmap;
         }
     }
 }
