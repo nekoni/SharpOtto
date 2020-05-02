@@ -1,4 +1,4 @@
-namespace SharpOtto.Core.Input
+namespace SharpOtto.Core
 {
     public sealed class KeypadKey
     {

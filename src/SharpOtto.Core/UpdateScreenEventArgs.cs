@@ -1,4 +1,4 @@
-namespace SharpOtto.Core.Screen
+namespace SharpOtto.Core
 {
     using System;
     using System.Drawing;

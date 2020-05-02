@@ -1,17 +1,14 @@
 ﻿namespace SharpOtto.Wpf
 {
-    using System;
     using System.Collections.Generic;
-    using System.Drawing;
     using System.Drawing.Imaging;
     using System.IO;
     using System.Threading.Tasks;
     using System.Windows;
     using System.Windows.Input;
     using System.Windows.Media.Imaging;
-    using System.Windows.Threading;
+
     using SharpOtto.Core;
-    using SharpOtto.Core.Input;
 
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -57,7 +54,7 @@
             using (var memoryStream = new MemoryStream())
             {
                 resource.CopyTo(memoryStream);
-                interpreter.LoadGame(memoryStream.ToArray());
+                interpreter.RunGame(memoryStream.ToArray());
             }
         }
 
@@ -87,11 +84,6 @@
                     }
                 }
             };
-
-            // this.interpreter.OnCyclesCompleted += (sender, args) =>
-            // {
-            //     Application.Current.Dispatcher.Invoke(DispatcherPriority.Render, new Action(delegate { }));
-            // };
         }
 
         private void RegisterKeyboardEvents()
