@@ -13,11 +13,11 @@ namespace SharpOtto.Core
 
         private bool drawScreen;
 
-        public byte Width { get => ScreenWidth; }
+        public byte Width => ScreenWidth;
 
-        public byte Heigth { get => ScreenHeigth; }
+        public byte Heigth => ScreenHeigth;
 
-        public bool[] Pixels { get => this.pixels; }
+        public bool[] Pixels => this.pixels;
 
         public bool DrawScreen { get => this.drawScreen; set => this.drawScreen = value; }
 

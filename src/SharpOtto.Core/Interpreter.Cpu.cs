@@ -16,7 +16,7 @@ namespace SharpOtto.Core
 
         public ushort I { get => this.index; set => this.index = value; }
 
-        public byte[] V { get { return this.v; } }
+        public byte[] V => this.v;
 
         private void InitCpu()
         {

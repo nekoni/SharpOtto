@@ -28,9 +28,9 @@ namespace SharpOtto.Core
 
         private byte[] memory = new byte[4096];
 
-        public byte[] Memory { get => this.memory; }
+        public byte[] Memory => this.memory;
 
-        public Stack<ushort> Stack { get => this.stack; }
+        public Stack<ushort> Stack => this.stack;
 
         private void Load(byte[] data)
         {
