@@ -29,16 +29,8 @@ namespace SharpOtto.Core
 
         internal void ExecuteNext()
         {
-            var opcode = (ushort)
-                (this.interpreter.Memory[this.interpreter.ProgramCounter] << 8 |
-                this.interpreter.Memory[this.interpreter.ProgramCounter + 1]);
-            var op = (ushort)(opcode & 0xF000);
-            var x = (byte)((opcode & 0x0F00) >> 8);
-            var y = (byte)((opcode & 0x00F0) >> 4);
-            var k = (byte)(opcode & 0x00FF);
-            var o = (byte)(opcode & 0x000F);
-            var n = (ushort)(opcode & 0x0FFF);
-            Console.WriteLine($"0x{opcode.ToString("X")}");
+            var opcode = this.Fetch();
+            var (op, x, y, k, o, n) = Decode(opcode);
             foreach (var opcodeHandler in this.opcodeHandlers)
             {
                 if (opcodeHandler.Execute(opcode, op, x, y, k, o, n))
@@ -54,6 +46,24 @@ namespace SharpOtto.Core
 
             Console.WriteLine($"Unhandled opcode 0x{opcode.ToString("X")}");
             this.interpreter.ProgramCounter += 2;
+        }
+
+        private static (ushort op, byte x, byte y, byte k, byte o, ushort n) Decode(ushort opcode)
+        {
+            var op = (ushort)(opcode & 0xF000);
+            var x = (byte)((opcode & 0x0F00) >> 8);
+            var y = (byte)((opcode & 0x00F0) >> 4);
+            var k = (byte)(opcode & 0x00FF);
+            var o = (byte)(opcode & 0x000F);
+            var n = (ushort)(opcode & 0x0FFF);
+            return (op, x, y, k, o, n);
+        }
+
+        private ushort Fetch()
+        {
+            return (ushort)
+                (this.interpreter.Memory[this.interpreter.ProgramCounter] << 8 |
+                this.interpreter.Memory[this.interpreter.ProgramCounter + 1]);
         }
     }
 }

@@ -5,6 +5,10 @@ namespace SharpOtto.Core
 
     public partial class Interpreter : ITimer
     {
+        private const int CpuClockHz = 1000;
+
+        private const int TimersClockHz = 60;
+
         private sbyte delay;
 
         private sbyte sound;
@@ -23,8 +27,8 @@ namespace SharpOtto.Core
         {
             this.clock.Reset();
             this.clock.Start();
-            this.cpuTimer = new CyclesTimer(this.clock, 1000);
-            this.delayAndSoundTimer = new CyclesTimer(this.clock, 60);
+            this.cpuTimer = new CyclesTimer(this.clock, CpuClockHz);
+            this.delayAndSoundTimer = new CyclesTimer(this.clock, TimersClockHz);
         }
 
         private void UpdateTimers()
