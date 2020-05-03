@@ -11,7 +11,7 @@ namespace SharpOtto.Core
 
         private Stopwatch clock = new Stopwatch();
 
-        private CyclesTimer opsTimer;
+        private CyclesTimer cpuTimer;
 
         private CyclesTimer delayAndSoundTimer;
 
@@ -23,7 +23,7 @@ namespace SharpOtto.Core
         {
             this.clock.Reset();
             this.clock.Start();
-            this.opsTimer = new CyclesTimer(this.clock, 1000);
+            this.cpuTimer = new CyclesTimer(this.clock, 1000);
             this.delayAndSoundTimer = new CyclesTimer(this.clock, 60);
         }
 
@@ -51,11 +51,6 @@ namespace SharpOtto.Core
             {
                 this.sound = 0;
             }
-        }
-
-        private int GetCpuCycles()
-        {
-            return this.opsTimer.GetCycles();
         }
     }
 }

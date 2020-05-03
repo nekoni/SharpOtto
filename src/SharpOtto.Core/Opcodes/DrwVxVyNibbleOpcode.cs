@@ -52,8 +52,8 @@ namespace SharpOtto.Core.Opcodes
         /// <summary>
         /// Gets a sprite from the memory and convers the bits to big endian.
         /// </summary>
-        /// <param name="n"></param>
-        /// <returns></returns>
+        /// <param name="n">The size of the sprite in bytes.</param>
+        /// <returns>A list of booleans representing the sprite.</returns>
         private List<bool> GetSprite(byte n)
         {
             var sprite = new byte[n];

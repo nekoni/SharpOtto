@@ -12,10 +12,6 @@ namespace SharpOtto.Core
 
         private OpcodeExecutor opcodeExecutor;
 
-        public Interpreter()
-        {
-        }
-
         public ushort ProgramCounter { get => this.programCounter; set => this.programCounter = value; }
 
         public ushort I { get => this.index; set => this.index = value; }
@@ -31,7 +27,7 @@ namespace SharpOtto.Core
 
         private void RunCpuCycles()
         {
-            var cycles = this.GetCpuCycles();
+            var cycles = this.cpuTimer.GetCycles();
             for (var cycle = 0; cycle < cycles; cycle++)
             {
                 this.opcodeExecutor.ExecuteNext();
