@@ -1,6 +1,7 @@
 namespace SharpOtto.Core
 {
-    internal interface IInterpreter : IMemory, ICpu, ITimer, IScreen, IKeypad
+    public interface IInterpreter : IMemory, ICpu, ITimer, IScreen, IKeypad
     {
+        void Run(byte[] data);
     }
 }

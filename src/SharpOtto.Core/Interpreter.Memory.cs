@@ -32,7 +32,7 @@ namespace SharpOtto.Core
 
         public Stack<ushort> Stack { get => this.stack; }
 
-        private void LoadGame(byte[] data)
+        private void Load(byte[] data)
         {
             Array.Clear(this.memory, 0, this.memory.Length);
             Array.Copy(this.fontset, 0, this.memory, 0, this.fontset.Length);

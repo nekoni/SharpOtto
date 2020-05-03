@@ -1,6 +1,6 @@
 namespace SharpOtto.Core
 {
-    internal interface ICpu
+    public interface ICpu
     {
         ushort I { get; set; }
 

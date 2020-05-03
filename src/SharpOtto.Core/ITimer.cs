@@ -1,6 +1,6 @@
 namespace SharpOtto.Core
 {
-    internal interface ITimer
+    public interface ITimer
     {
         sbyte Delay { get; set; }
 

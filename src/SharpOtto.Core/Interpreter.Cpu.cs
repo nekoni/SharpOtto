@@ -10,6 +10,12 @@ namespace SharpOtto.Core
 
         private byte[] v = new byte[16];
 
+        private OpcodeExecutor opcodeExecutor;
+
+        public Interpreter()
+        {
+        }
+
         public ushort ProgramCounter { get => this.programCounter; set => this.programCounter = value; }
 
         public ushort I { get => this.index; set => this.index = value; }
@@ -19,7 +25,17 @@ namespace SharpOtto.Core
         private void InitCpu()
         {
             Array.Clear(this.v, 0, this.v.Length);
+            this.opcodeExecutor = new OpcodeExecutor(this);
             this.programCounter = 512;
+        }
+
+        private void RunCpuCycles()
+        {
+            var cycles = this.GetCpuCycles();
+            for (var cycle = 0; cycle < cycles; cycle++)
+            {
+                this.opcodeExecutor.ExecuteNext();
+            }
         }
     }
 }

@@ -15,7 +15,7 @@
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Interpreter interpreter = new Interpreter();
+        private IInterpreter interpreter = new Interpreter();
 
         private Task gameTask;
 
@@ -44,17 +44,17 @@
             this.InitializeComponent();
             this.RegisterKeyboardEvents();
             this.RegisterScreenUpdateEvent();
-            this.gameTask = Task.Factory.StartNew(() => this.LoadGame());
+            this.gameTask = Task.Factory.StartNew(() => this.Run());
         }
 
-        private void LoadGame()
+        private void Run()
         {
             var assembly = typeof(SharpOtto.Wpf.App).Assembly;
             var resource = assembly.GetManifestResourceStream("SharpOtto.Wpf.roms.tetris.ch8");
             using (var memoryStream = new MemoryStream())
             {
                 resource.CopyTo(memoryStream);
-                interpreter.RunGame(memoryStream.ToArray());
+                interpreter.Run(memoryStream.ToArray());
             }
         }
 

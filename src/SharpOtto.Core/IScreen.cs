@@ -1,6 +1,8 @@
 namespace SharpOtto.Core
 {
-    internal interface IScreen
+    using System;
+
+    public interface IScreen
     {
         byte Width { get; }
 
@@ -11,5 +13,7 @@ namespace SharpOtto.Core
         bool[] Pixels { get; }
 
         void ClearScreen();
+
+        Action<object, UpdateScreenEventArgs> OnUpdateScreen { get; set; }
     }
 }

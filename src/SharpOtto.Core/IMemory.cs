@@ -2,7 +2,7 @@ namespace SharpOtto.Core
 {
     using System.Collections.Generic;
 
-    internal interface IMemory
+    public interface IMemory
     {
         byte[] Memory { get; }
 

@@ -1,7 +1,11 @@
 namespace SharpOtto.Core
 {
-    internal interface IKeypad
+    public interface IKeypad
     {
         bool[] Keys { get; }
+
+        void KeyDown(KeypadKey key);
+
+        void KeyUp(KeypadKey key);
     }
 }

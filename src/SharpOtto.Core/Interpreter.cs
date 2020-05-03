@@ -2,16 +2,9 @@ namespace SharpOtto.Core
 {
     public partial class Interpreter : IInterpreter
     {
-        private OpcodeExecutor opcodeExecutor;
-
-        public Interpreter()
+        public void Run(byte[] data)
         {
-            this.opcodeExecutor = new OpcodeExecutor(this);
-        }
-
-        public void RunGame(byte[] data)
-        {
-            this.LoadGame(data);
+            this.Load(data);
             this.InitTimers();
             this.InitCpu();
             this.ClearScreen();
@@ -19,13 +12,7 @@ namespace SharpOtto.Core
             while (true)
             {
                 this.UpdateTimers();
-
-                var cycles = this.GetCpuCycles();
-                for (var cycle = 0; cycle < cycles; cycle++)
-                {
-                    this.opcodeExecutor.ExecuteNext();
-                }
-
+                this.RunCpuCycles();
                 this.UpdateScreen();
             }
         }
