@@ -9,29 +9,25 @@ namespace SharpOtto.Core
 
         private const byte ScreenHeigth = 32;
 
-        private bool[] pixels = new bool[ScreenWidth * ScreenHeigth];
-
-        private bool drawScreen;
-
         public byte Width => ScreenWidth;
 
         public byte Heigth => ScreenHeigth;
 
-        public bool[] Pixels => this.pixels;
+        public bool[] Pixels { get; } = new bool[ScreenWidth * ScreenHeigth];
 
-        public bool DrawScreen { get => this.drawScreen; set => this.drawScreen = value; }
+        public bool DrawScreen { get ; set; } = false;
 
         public Action<object, UpdateScreenEventArgs> OnUpdateScreen { get; set; }
 
         public void ClearScreen()
         {
-            Array.Clear(this.pixels, 0, this.pixels.Length);
-            this.drawScreen = true;
+            Array.Clear(this.Pixels, 0, this.Pixels.Length);
+            this.DrawScreen = true;
         }
 
         private void UpdateScreen()
         {
-            if (!this.drawScreen)
+            if (!this.DrawScreen)
             {
                 return;
             }
@@ -41,7 +37,7 @@ namespace SharpOtto.Core
             {
                 for (var x = 0; x < ScreenWidth; x++)
                 {
-                    var color = this.pixels[x + y * ScreenWidth] ? Color.White : Color.Black;
+                    var color = this.Pixels[x + y * ScreenWidth] ? Color.White : Color.Black;
                     bmp.SetPixel(x, y, color);
                 }
             }
@@ -51,7 +47,7 @@ namespace SharpOtto.Core
                 this.OnUpdateScreen(this, new UpdateScreenEventArgs(bmp));
             }
 
-            this.drawScreen = false;
+            this.DrawScreen = false;
         }
     }
 }

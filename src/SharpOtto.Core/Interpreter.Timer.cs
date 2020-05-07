@@ -9,19 +9,15 @@ namespace SharpOtto.Core
 
         private const int TimersClockHz = 60;
 
-        private sbyte delay;
-
-        private sbyte sound;
-
         private Stopwatch clock = new Stopwatch();
 
         private CyclesTimer cpuTimer;
 
         private CyclesTimer delayAndSoundTimer;
 
-        public sbyte Delay { get => this.delay; set => this.delay = value; }
+        public sbyte Delay { get; set; }
 
-        public sbyte Sound { get => this.sound; set => this.sound = value; }
+        public sbyte Sound { get; set; }
 
         private void InitTimers()
         {
@@ -34,26 +30,26 @@ namespace SharpOtto.Core
         private void UpdateTimers()
         {
             var delayAndSoundCycles = this.delayAndSoundTimer.GetCycles();
-            if (this.delay > 0)
+            if (this.Delay > 0)
             {
-                this.delay -= (sbyte)delayAndSoundCycles;
+                this.Delay -= (sbyte)delayAndSoundCycles;
             }
             else
             {
-                this.delay = 0;
+                this.Delay = 0;
             }
 
-            if (this.sound > 0)
+            if (this.Sound > 0)
             {
-                this.sound -= (sbyte)delayAndSoundCycles;
-                if (this.sound <= 0)
+                this.Sound -= (sbyte)delayAndSoundCycles;
+                if (this.Sound <= 0)
                 {
                     Console.WriteLine("Beep");
                 }
             }
             else
             {
-                this.sound = 0;
+                this.Sound = 0;
             }
         }
     }

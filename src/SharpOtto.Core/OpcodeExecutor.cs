@@ -27,7 +27,7 @@ namespace SharpOtto.Core
             }
         }
 
-        internal void ExecuteNext()
+        internal bool ExecuteNext()
         {
             var opcode = this.Fetch();
             var (op, x, y, k, o, n) = Decode(opcode);
@@ -35,17 +35,26 @@ namespace SharpOtto.Core
             {
                 if (opcodeHandler.Execute(opcode, op, x, y, k, o, n))
                 {
+                    this.interpreter.ExecutedOpcodes.Add(opcode);
+                    if (this.interpreter.ExitOnOpcode != 0 &&
+                        this.interpreter.ExitOnOpcode == opcode)
+                    {
+                        return false;
+                    }
+
                     if (!opcodeHandler.SkipIncrementProgramCounter)
                     {
                         this.interpreter.ProgramCounter += 2;
                     }
 
-                    return;
+                    return true;
                 }
             }
 
             Console.WriteLine($"Unhandled opcode 0x{opcode.ToString("X")}");
             this.interpreter.ProgramCounter += 2;
+
+            return true;
         }
 
         private static (ushort op, byte x, byte y, byte k, byte o, ushort n) Decode(ushort opcode)

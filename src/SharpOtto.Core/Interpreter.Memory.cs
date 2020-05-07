@@ -5,8 +5,6 @@ namespace SharpOtto.Core
 
     public partial class Interpreter : IMemory
     {
-        private Stack<ushort> stack = new Stack<ushort>();
-
         private readonly byte[] fontset = new byte[] {
             0xF0, 0x90, 0x90, 0x90, 0xF0,
             0x20, 0x60, 0x20, 0x20, 0x70,
@@ -26,18 +24,16 @@ namespace SharpOtto.Core
             0xF0, 0x80, 0xF0, 0x80, 0x80
         };
 
-        private byte[] memory = new byte[4096];
+        public byte[] Memory { get; } = new byte[4096];
 
-        public byte[] Memory => this.memory;
-
-        public Stack<ushort> Stack => this.stack;
+        public Stack<ushort> Stack { get; } = new Stack<ushort>();
 
         private void Load(byte[] data)
         {
-            Array.Clear(this.memory, 0, this.memory.Length);
-            Array.Copy(this.fontset, 0, this.memory, 0, this.fontset.Length);
-            Array.Copy(data, 0, this.memory, 512, data.Length);
-            this.stack.Clear();
+            Array.Clear(this.Memory, 0, this.Memory.Length);
+            Array.Copy(this.fontset, 0, this.Memory, 0, this.fontset.Length);
+            Array.Copy(data, 0, this.Memory, 512, data.Length);
+            this.Stack.Clear();
         }
     }
 }

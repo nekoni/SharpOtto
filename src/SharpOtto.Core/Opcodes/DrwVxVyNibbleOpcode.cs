@@ -3,6 +3,7 @@ namespace SharpOtto.Core.Opcodes
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.Linq;
 
     /// <summary>
     /// Dxyn - DRW Vx, Vy, nibble
@@ -50,7 +51,7 @@ namespace SharpOtto.Core.Opcodes
         }
 
         /// <summary>
-        /// Gets a sprite from the memory and convers the bits to big endian.
+        /// Gets a sprite from the memory.
         /// </summary>
         /// <param name="n">The size of the sprite in bytes.</param>
         /// <returns>A list of booleans representing the sprite.</returns>
@@ -62,14 +63,7 @@ namespace SharpOtto.Core.Opcodes
             for (var z = 0; z < n; z++)
             {
                 var tmp = new BitArray(new byte[] { sprite[z] });
-                var tmp1 = new List<bool>();
-                foreach (var bit in tmp)
-                {
-                    tmp1.Add((bool)bit);
-                }
-
-                tmp1.Reverse();
-                bsprite.AddRange(tmp1);
+                bsprite.AddRange(tmp.Cast<bool>().Reverse());
             }
 
             return bsprite;
