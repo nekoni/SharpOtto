@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="test.ch8" />
-    <EmbeddedResource Include="test.png" />
+    <EmbeddedResource Include="test.bmp" />
   </ItemGroup>
 
   <ItemGroup>

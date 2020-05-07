@@ -40,7 +40,7 @@ namespace SharpOtto.Tests
             var interpreter = new Interpreter() { EnableRecording = true, ExitOnOpcode = 4878 };
             var lastBitmap = default(Bitmap);
             var rom = GetResourceBytes("SharpOtto.Tests.test.ch8");
-            var bmp = GetResourceBytes("SharpOtto.Tests.test.png");
+            var bmp = GetResourceBytes("SharpOtto.Tests.test.bmp");
 
             interpreter.OnUpdateScreen += (sender, ev) => { lastBitmap = ev.Bitmap; };
             interpreter.Run(rom);
@@ -49,21 +49,9 @@ namespace SharpOtto.Tests
 
             using (var memoryStream = new MemoryStream())
             {
-                lastBitmap.Save(memoryStream, ImageFormat.Png);
-                Assert.False(true, DumpBinaryFile(memoryStream.ToArray()));
-                // Assert.Equal(bmp, memoryStream.ToArray());
+                lastBitmap.Save(memoryStream, ImageFormat.Bmp);
+                Assert.Equal(bmp, memoryStream.ToArray());
             }
-        }
-
-        private static string DumpBinaryFile(byte[] bytes)
-        {
-            var output = string.Empty;
-            foreach (var b in bytes)
-            {
-                output += $"{b} ";
-            }
-
-            return output;
         }
 
         private static byte[] GetResourceBytes(string resourceName)
