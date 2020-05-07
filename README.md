@@ -1,4 +1,4 @@
-# SharpOtto
+# SharpOtto ![Build](https://travis-ci.com/nekoni/SharpOtto.svg?branch=master)
 
 Simple Chip-8 emulator written in C# .NET Core.
 Tetris is loaded by default, use the num pad keys to control the game.
