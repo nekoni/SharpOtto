@@ -50,8 +50,20 @@ namespace SharpOtto.Tests
             using (var memoryStream = new MemoryStream())
             {
                 lastBitmap.Save(memoryStream, ImageFormat.Png);
-                Assert.Equal(bmp, memoryStream.ToArray());
+                Assert.False(true, DumpBinaryFile(memoryStream.ToArray()));
+                // Assert.Equal(bmp, memoryStream.ToArray());
             }
+        }
+
+        private static string DumpBinaryFile(byte[] bytes)
+        {
+            var output = string.Empty;
+            foreach (var b in bytes)
+            {
+                output += $"{b} ";
+            }
+
+            return output;
         }
 
         private static byte[] GetResourceBytes(string resourceName)
