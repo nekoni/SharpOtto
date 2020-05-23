@@ -17,8 +17,6 @@
     {
         private IInterpreter interpreter = new Interpreter();
 
-        private Task gameTask;
-
         private Dictionary<Key, KeypadKey> keysMap = new Dictionary<Key, KeypadKey>()
         {
             { Key.NumPad0, KeypadKey.Pad0 },
@@ -42,9 +40,11 @@
         public MainWindow()
         {
             this.InitializeComponent();
+            
             this.RegisterKeyboardEvents();
             this.RegisterScreenUpdateEvent();
-            this.gameTask = Task.Factory.StartNew(() => this.Run());
+            this.Loaded += (s, e) => Task.Run(() => this.Run());
+            this.Closing += (s, e) => this.interpreter.Exit = true;
         }
 
         private void Run()
@@ -62,27 +62,25 @@
         {
             this.interpreter.OnUpdateScreen += (sender, args) =>
             {
-                using (var memoryStream = new MemoryStream())
+                if (this.interpreter.Exit)
                 {
-                    args.Bitmap.Save(memoryStream, ImageFormat.Png);
-                    memoryStream.Position = 0;
-
-                    try
-                    {
-                        this.Dispatcher.Invoke(() =>
-                        {
-                            var image = new BitmapImage();
-                            image.BeginInit();
-                            image.CacheOption = BitmapCacheOption.OnLoad;
-                            image.StreamSource = memoryStream;
-                            image.EndInit();
-                            this.Screen.Source = image;
-                        });
-                    }
-                    catch
-                    {
-                    }
+                    return;
                 }
+
+                this.Dispatcher.Invoke(() =>
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        args.Bitmap.Save(memoryStream, ImageFormat.Bmp);
+                        memoryStream.Position = 0;
+                        var image = new BitmapImage();
+                        image.BeginInit();
+                        image.CacheOption = BitmapCacheOption.OnLoad;
+                        image.StreamSource = memoryStream;
+                        image.EndInit();
+                        this.Screen.Source = image;
+                    }
+                });
             };
         }
 

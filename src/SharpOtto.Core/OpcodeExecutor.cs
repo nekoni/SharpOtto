@@ -35,7 +35,11 @@ namespace SharpOtto.Core
             {
                 if (opcodeHandler.Execute(opcode, op, x, y, k, o, n))
                 {
-                    this.interpreter.ExecutedOpcodes.Add(opcode);
+                    if (this.interpreter.EnableRecording)
+                    {
+                        this.interpreter.ExecutedOpcodes.Add(opcode);
+                    }
+
                     if (this.interpreter.ExitOnOpcode != 0 &&
                         this.interpreter.ExitOnOpcode == opcode)
                     {

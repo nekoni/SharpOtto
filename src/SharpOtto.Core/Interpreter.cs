@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace SharpOtto.Core
 {
+    using System.Collections.Generic;
+
     public partial class Interpreter : IInterpreter
     {
         public bool EnableRecording { get; set; }
@@ -10,6 +10,8 @@ namespace SharpOtto.Core
 
         public ushort ExitOnOpcode { get; set; }
 
+        public bool Exit { get; set; }
+
         public void Run(byte[] data)
         {
             this.Load(data);
@@ -17,7 +19,7 @@ namespace SharpOtto.Core
             this.InitCpu();
             this.ClearScreen();
 
-            while (true)
+            while (!this.Exit)
             {
                 this.UpdateTimers();
                 if (!this.RunCpuCycles())

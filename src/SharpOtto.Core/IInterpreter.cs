@@ -10,6 +10,8 @@ namespace SharpOtto.Core
 
         ushort ExitOnOpcode { get; set; }
 
+        bool Exit { get; set; }
+
         void Run(byte[] data);
     }
 }
